@@ -9,23 +9,19 @@ import play.api.Logger
 import uk.gov.hmrc.helloworldreactivemongo.config.KillConfig
 
 import scala.concurrent.ExecutionContext
-import scala.concurrent.duration.FiniteDuration
 
 class MongoKillScheduler @Inject()(config: KillConfig, actorSystem: ActorSystem)(
                                   implicit val ec: ExecutionContext) {
 
   private val logger = Logger(getClass)
 
-  val interval: FiniteDuration = FiniteDuration(24, TimeUnit.HOURS)
-
-  actorSystem.scheduler.schedule(config.helloKillTimer, interval) {
-    if (config.helloKillEnabled) {
-      logger.warn("Killing service..")
-      System.exit(0)
-    } else {
-      logger.info("Kill testing is disabled")
-    }
-
+  config.helloKillTimer match {
+    case Some(delay) =>
+      actorSystem.scheduler.scheduleOnce(delay) {
+        logger.warn("Killing service..")
+        System.exit(0)
+      }
+    case None => logger.info("Kill testing is disabled")
   }
 
 }
