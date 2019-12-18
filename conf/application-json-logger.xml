@@ -7,6 +7,8 @@
 
     <logger name="uk.gov" level="${logger.uk.gov:-INFO}"/>
 
+    <logger name="reactivemongo.core.protocol.MongoHandler" level="${logger.reactivemongo:-WARN}"/>
+
     <root level="${logger.application:-WARN}">
         <appender-ref ref="STDOUT"/>
     </root>
